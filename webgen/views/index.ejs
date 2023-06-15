@@ -1,11 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <button type="button" onclick="merubah()">ubah</button>
+    <table>
+      <thead>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </thead>
+      <tbody id="body-bread">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tbody>
+    </table>
+    <script>
+      function merubah() {
+        fetch("http://localhost:3000/")
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("gagal");
+          });
+        document.getElementById("body-bread").innerHTML =
+          "<h1>Ini body siswa</h1>";
+      }
+    </script>
   </body>
 </html>
