@@ -4,40 +4,190 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+
     <title>Document</title>
   </head>
   <body>
-    <button type="button" onclick="merubah()">ubah</button>
-    <table>
-      <thead>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </thead>
-      <tbody id="body-bread">
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tbody>
-    </table>
+    <div class="card">
+      <div class="card-header">
+        <h1>BREAD</h1>
+      </div>
+      <div class="card-body">
+        <form id="form">
+          <fieldset>
+            <div class="mb-3">
+              <label for="number1" class="form-label">String</label>
+              <input
+                type="number"
+                id="number1"
+                class="form-control"
+                placeholder="Number"
+                name="number"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="string1" class="form-label">String</label>
+              <input
+                type="text"
+                id="string1"
+                class="form-control"
+                placeholder="String"
+                name="string"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="integer1" class="form-label">integer</label>
+              <input
+                type="number"
+                id="integer1"
+                class="form-control"
+                placeholder="integer"
+                name="integer"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="float1" class="form-label">float</label>
+              <input
+                type="number"
+                step="0.01"
+                id="float1"
+                class="form-control"
+                placeholder="float"
+                name="float"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="date1" class="form-label">date</label>
+              <input
+                type="date"
+                id="date1"
+                class="form-control"
+                placeholder="date"
+                name="date"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="boolean1" class="form-label">boolean</label>
+              <select id="boolean1" name="boolean">
+                <option disabled>Choose the boolean...</option>
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Tambah</button>
+          </fieldset>
+        </form>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <td>string</td>
+            <td>number</td>
+            <td>integer</td>
+            <td>float</td>
+            <td>date</td>
+            <td>boolean</td>
+          </tr>
+        </thead>
+        <tbody id="body-bread"></tbody>
+      </table>
+    </div>
     <script>
-      function merubah() {
+      function loadData() {
         fetch("http://localhost:3000/")
+          .then((response) => response.json())
           .then((data) => {
+            let html = "";
+            data.forEach((datas) => {
+              html += `
+              <tr>
+                <td>${datas.string}</td>
+                <td>${datas.number}</td>
+                <td>${datas.integer}</td>
+                <td>${datas.float}</td>
+                <td>${datas.date}</td>
+                <td>${datas.boolean}</td>
+                <td>
+                  <button class="btn btn-danger" type="button" onclick="deleteData('${datas._id}')">Hapus</button>
+                </td>
+                </tr>
+              `;
+            });
             console.log(data);
+            document.getElementById("body-bread").innerHTML = html;
           })
           .catch((err) => {
             console.log(err);
             alert("gagal");
           });
-        document.getElementById("body-bread").innerHTML =
-          "<h1>Ini body siswa</h1>";
       }
+
+      function addData() {
+        const string = document.getElementById("string1").value;
+        const number = document.getElementById("number1").value;
+        const integer = document.getElementById("integer1").value;
+        const float = document.getElementById("float1").value;
+        const date = document.getElementById("date1").value;
+        const boolean = document.getElementById("boolean1").value;
+
+        fetch("http://localhost:3000/", {
+          method: "POST", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            string,
+            number,
+            integer,
+            float,
+            date,
+            boolean,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            loadData();
+            const string = (document.getElementById("string1").value = "");
+            const number = (document.getElementById("number1").value = "");
+            const integer = (document.getElementById("integer1").value = "");
+            const float = (document.getElementById("float1").value = "");
+            const date = (document.getElementById("date1").value = "");
+            const boolean = (document.getElementById("boolean1").value = "");
+          });
+      }
+
+      function deleteData(id) {
+        fetch(`http://localhost:3000/${id}`, {
+          method: "DELETE", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            loadData();
+          });
+      }
+      loadData();
+
+      document
+        .getElementById("form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          addData();
+        });
     </script>
   </body>
 </html>
