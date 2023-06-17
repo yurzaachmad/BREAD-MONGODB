@@ -19,10 +19,10 @@
         <h1>BREAD</h1>
       </div>
       <div class="card-body">
-        <form id="form">
+        <form id="form" style="display: none">
           <fieldset>
             <div class="mb-3">
-              <label for="number1" class="form-label">String</label>
+              <label for="number1" class="form-label">Number</label>
               <input
                 type="number"
                 id="number1"
@@ -93,8 +93,8 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <td>string</td>
             <td>number</td>
+            <td>string</td>
             <td>integer</td>
             <td>float</td>
             <td>date</td>
@@ -103,8 +103,10 @@
         </thead>
         <tbody id="body-bread"></tbody>
       </table>
+      <button class="btn btn-primary" id="addButton">Add</button>
     </div>
     <script>
+      //script javascript disini
       function loadData() {
         fetch("http://localhost:3000/")
           .then((response) => response.json())
@@ -113,14 +115,15 @@
             data.forEach((datas) => {
               html += `
               <tr>
-                <td>${datas.string}</td>
                 <td>${datas.number}</td>
+                <td>${datas.string}</td>
                 <td>${datas.integer}</td>
                 <td>${datas.float}</td>
                 <td>${datas.date}</td>
                 <td>${datas.boolean}</td>
                 <td>
-                  <button class="btn btn-danger" type="button" onclick="deleteData('${datas._id}')">Hapus</button>
+                  <button class="btn btn-danger" onclick="deleteData('${datas._id}')">Hapus</button>
+                  <button class="btn btn-success" onclick="editData('${datas._id}')">Edit</button>
                 </td>
                 </tr>
               `;
@@ -159,6 +162,7 @@
           .then((response) => response.json())
           .then((data) => {
             loadData();
+            form.style.display = "none";
             const string = (document.getElementById("string1").value = "");
             const number = (document.getElementById("number1").value = "");
             const integer = (document.getElementById("integer1").value = "");
@@ -166,6 +170,50 @@
             const date = (document.getElementById("date1").value = "");
             const boolean = (document.getElementById("boolean1").value = "");
           });
+      }
+
+      async function editData(id) {
+        try {
+          const number = document.getElementById("number1").value; // Assuming 'number' is the ID of the input field for the number value
+          const string = document.getElementById("string1").value;
+          const integer = document.getElementById("integer1").value;
+          const float = document.getElementById("float1").value;
+          const date = document.getElementById("date1").value;
+          const boolean = document.getElementById("boolean1").value;
+          const data = {
+            number: number,
+            string: string,
+            integer: integer,
+            float: float,
+            date: date,
+            boolean: boolean,
+          };
+          if (!number || !string || !integer || !float || !date || !boolean) {
+            alert("Please,Insert the data");
+            return;
+          }
+          const response = await fetch(`http://localhost:3000/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+          if (response.ok) {
+            const result = await response.json();
+            console.log("Success: ", result);
+            // Clear the input fields
+            document.getElementById("number1").value = "";
+            document.getElementById("string1").value = "";
+            document.getElementById("integer1").value = "";
+            document.getElementById("float1").value = "";
+            document.getElementById("date1").value = "";
+            document.getElementById("boolean1").value = "";
+            loadData();
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
 
       function deleteData(id) {
@@ -180,14 +228,27 @@
             loadData();
           });
       }
-      loadData();
+
+      const addButton = document.getElementById("addButton");
+      const form = document.getElementById("form");
+
+      addButton.addEventListener("click", function () {
+        if (form.style.display === "none") {
+          form.style.display = "block";
+        } else {
+          form.style.display = "none";
+        }
+      });
 
       document
         .getElementById("form")
         .addEventListener("submit", function (event) {
           event.preventDefault();
           addData();
+          editData();
         });
+
+      loadData();
     </script>
   </body>
 </html>
