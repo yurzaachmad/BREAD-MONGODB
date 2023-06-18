@@ -68,10 +68,29 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+//to get the predata
+router.get("/edit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Periksa apakah id sesuai dengan format yang diharapkan
+    if (!ObjectID.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID format" });
+    }
+
+    const db = req.app.locals.db;
+    const collection = db.collection("bread");
+
+    const result = await collection.findOne({ _id: new ObjectID(id) });
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { number, string, integer, float, date, boolean } = req.body;
     const db = req.app.locals.db;
     const collection = db.collection("bread");
 

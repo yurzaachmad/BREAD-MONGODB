@@ -108,7 +108,7 @@
               <label for="string2" class="form-label">String</label>
               <input
                 type="text"
-                id="string2"
+                id="string1"
                 class="form-control"
                 placeholder="String"
                 name="string"
@@ -178,8 +178,7 @@
       <button class="btn btn-primary" id="addButton">Add</button>
     </div>
     <script>
-      let selectedId = null;
-
+      //script javascript disini
       function loadData() {
         fetch("http://localhost:3000/")
           .then((response) => response.json())
@@ -196,6 +195,7 @@
                 <td>${datas.boolean}</td>
                 <td>
                   <button class="btn btn-danger" onclick="deleteData('${datas._id}')">Hapus</button>
+                  <button class="btn btn-primary" id="editButton">Edit</button>
                   <button class="btn btn-success" onclick="editData('${datas._id}')">Edit</button>
                 </td>
                 </tr>
@@ -245,7 +245,7 @@
           });
       }
 
-      async function editDatas(id) {
+      async function editData(id) {
         try {
           const number = document.getElementById("number2").value;
           const string = document.getElementById("string2").value;
@@ -262,10 +262,9 @@
             boolean: boolean,
           };
           if (!number || !string || !integer || !float || !date || !boolean) {
-            alert("Please, Insert the data");
+            alert("Please,Insert the data");
             return;
           }
-          console.log(id);
           const response = await fetch(`http://localhost:3000/${id}`, {
             method: "PUT",
             headers: {
@@ -288,25 +287,6 @@
         } catch (error) {
           console.log(error);
         }
-      }
-
-      function editData(id) {
-        selectedId = id;
-        fetch(`http://localhost:3000/edit/${id}`)
-          .then((response) => response.json())
-          .then((data) => {
-            document.getElementById("number2").value = data.number;
-            document.getElementById("string2").value = data.string;
-            document.getElementById("integer2").value = data.integer;
-            document.getElementById("float2").value = data.float;
-            document.getElementById("date2").value = data.date;
-            document.getElementById("boolean2").checked = data.boolean;
-
-            form2.style.display = "block";
-          })
-          .catch((error) => {
-            console.log(error);
-          });
       }
 
       function deleteData(id) {
@@ -333,22 +313,38 @@
         }
       });
 
+      const editButton = document.getElementById("editButton");
+      const form2 = document.getElementById("form2");
+
+      editButton.addEventListener("click", function () {
+        const id = `${datas._id}`;
+
+        // Mengambil data lama berdasarkan ID menggunakan API GET
+        fetch(`http://localhost:3000/${id}`) // Ganti "your_route" dengan route API GET yang sesuai
+          .then((response) => response.json())
+          .then((data) => {
+            // Mengisi nilai-nilai form dengan data lama
+            document.getElementById("number2").value = data.number;
+            document.getElementById("string2").value = data.string;
+            document.getElementById("integer2").value = data.integer;
+            document.getElementById("float2").value = data.float;
+            document.getElementById("date2").value = data.date;
+            document.getElementById("boolean2").checked = data.boolean;
+
+            // Menampilkan form edit
+            form2.style.display = "block";
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
       document
         .getElementById("form")
         .addEventListener("submit", function (event) {
           event.preventDefault();
           addData();
-          if (selectedId) {
-            editData(selectedId);
-          }
-        });
-      let id;
-      document
-        .getElementById("form2")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          id = `${datas._id}`;
-          editDatas(id);
+          editData();
         });
 
       loadData();
