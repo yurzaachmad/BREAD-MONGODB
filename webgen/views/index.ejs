@@ -79,7 +79,7 @@
             </div>
             <div class="mb-3">
               <label for="boolean1" class="form-label">boolean</label>
-              <select id="boolean1" name="boolean">
+              <select class="form-select" id="boolean1" name="boolean">
                 <option disabled>Choose the boolean...</option>
                 <option value="true">True</option>
                 <option value="false">False</option>
@@ -151,7 +151,7 @@
             </div>
             <div class="mb-3">
               <label for="boolean2" class="form-label">boolean</label>
-              <select id="boolean2" name="boolean">
+              <select class="form-select" id="boolean2" name="boolean">
                 <option disabled>Choose the boolean...</option>
                 <option value="true">True</option>
                 <option value="false">False</option>
@@ -160,6 +160,111 @@
 
             <button type="submit" class="btn btn-primary">Edit</button>
           </fieldset>
+        </form>
+      </div>
+      <div class="card-body">
+        <form id="formSearch">
+          <div class="row mb-3">
+            <input type="hidden" name="page" value="1" />
+            <label for="idSearch" class="col-sm-2 col-form-label">id</label>
+            <div class="col-sm-10">
+              <input type="checkbox" id="idSearch" name="id1" value="id" />
+              <input
+                type="number"
+                class="form-control"
+                name="idSearch"
+                value=""
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="stringSearch" class="col-sm-2 col-form-label"
+              >String</label
+            >
+            <div class="col-sm-10">
+              <input
+                type="checkbox"
+                id="stringSearch"
+                name="string1"
+                value="string"
+              />
+              <input
+                type="text"
+                class="form-control"
+                name="stringSearch"
+                value=""
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="integerSearch" class="col-sm-2 col-form-label"
+              >Integer</label
+            >
+            <div class="col-sm-10">
+              <input
+                type="checkbox"
+                id="integerSearch"
+                name="integer1"
+                value="integer"
+              />
+              <input
+                type="number"
+                class="form-control"
+                name="integerSearch"
+                value=""
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="floatSearch" class="col-sm-2 col-form-label"
+              >Float</label
+            >
+            <div class="col-sm-10">
+              <input
+                type="checkbox"
+                id="floatSearch"
+                name="float1"
+                value="float"
+              />
+              <input
+                type="number"
+                class="form-control"
+                name="floatSearch"
+                value=""
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="dateSearch" class="col-sm-2 col-form-label">Date</label>
+            <div class="col-sm-10">
+              <input
+                type="checkbox"
+                id="dateSearch"
+                name="date1"
+                value="date"
+              />
+              <input type="date" class="form-control" name="dateS" value="" />
+              <small>to</small>
+              <input type="date" class="form-control" name="dateE" value="" />
+            </div>
+          </div>
+          <div>
+            <label for="booleanSearch">Boolean</label>
+            <br />
+            <input
+              type="checkbox"
+              id="booleanSearch"
+              name="boolean1"
+              value="true"
+            />
+            <select class="form-select" id="boolean" name="booleanSearch">
+              <option value="">-- Select --</option>
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </div>
+          <br />
+          <button type="submit" class="btn btn-primary">Cari</button>
         </form>
       </div>
       <table class="table table-striped">
@@ -175,17 +280,20 @@
         </thead>
         <tbody id="body-bread"></tbody>
       </table>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination" id="pagination1"></ul>
+      </nav>
       <button class="btn btn-primary" id="addButton">Add</button>
     </div>
     <script>
       let selectedId = null;
 
-      function loadData() {
-        fetch("http://localhost:3000/")
+      function loadData(page) {
+        fetch(`http://localhost:3000/?page=${page}`)
           .then((response) => response.json())
           .then((data) => {
             let html = "";
-            data.forEach((datas) => {
+            data.data.forEach((datas) => {
               html += `
               <tr>
                 <td>${datas.number}</td>
@@ -203,10 +311,27 @@
             });
             console.log(data);
             document.getElementById("body-bread").innerHTML = html;
+
+            const paginationContainer = document.getElementById("pagination1");
+            paginationContainer.innerHTML = "";
+
+            for (let i = 0; i < data.pages; i++) {
+              const li = document.createElement("li");
+              const link = document.createElement("a");
+              link.href = `javascript:void(0)`;
+              link.innerText = i + 1;
+
+              link.addEventListener("click", () => {
+                loadData(i + 1);
+              });
+
+              li.appendChild(link);
+              paginationContainer.appendChild(li);
+            }
           })
           .catch((err) => {
             console.log(err);
-            alert("gagal");
+            alert("gagal mengambil data" + err);
           });
       }
 
@@ -277,6 +402,7 @@
             const result = await response.json();
             console.log("Success: ", result);
             // Clear the input fields
+            form2.style.display = "none";
             document.getElementById("number2").value = "";
             document.getElementById("string2").value = "";
             document.getElementById("integer2").value = "";
@@ -289,18 +415,19 @@
           console.log(error);
         }
       }
-
+      let datas;
       function editData(id) {
         selectedId = id;
         fetch(`http://localhost:3000/edit/${id}`)
           .then((response) => response.json())
           .then((data) => {
+            datas = data;
             document.getElementById("number2").value = data.number;
             document.getElementById("string2").value = data.string;
             document.getElementById("integer2").value = data.integer;
             document.getElementById("float2").value = data.float;
             document.getElementById("date2").value = data.date;
-            document.getElementById("boolean2").checked = data.boolean;
+            document.getElementById("boolean2").value = data.boolean;
 
             form2.style.display = "block";
           })

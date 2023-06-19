@@ -4,21 +4,87 @@ var moment = require("moment");
 const ObjectID = require("mongodb").ObjectId;
 
 /* GET home page. */
+
 router.get("/", async (req, res) => {
   try {
-    const db = req.app.locals.db;
-    const collection = db.collection("bread");
-    const data = await collection.find().toArray();
-    const processData = [];
-    data.forEach((item) => {
-      const formatedData = moment(item.date).format("YYYY-MMMM-DD");
-      processData.push({ ...item, date: formatedData });
+    const limit = 3;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
+
+    const params = [];
+    const query = {};
+
+    if (req.query.id) {
+      params.push({ _id: parseInt(req.query.id) });
+      query.id = parseInt(req.query.id);
+    }
+    // if (req.query._id) {
+    //   const idValue = req.query._id;
+    //   params.push({ _id: idValue });
+    //   query._id = idValue;
+    // }
+    // if (req.query.id) {
+    //   params.push({ number: parseInt(req.query.id) });
+    // }
+    if (req.query.number) {
+      params.push({ number: parseInt(req.query.number) });
+      query.number = parseInt(req.query.number);
+    }
+    if (req.query.string) {
+      params.push(req.query.string);
+      query.string = { $regex: req.query.string, $options: "i" };
+    }
+    if (req.query.integer) {
+      params.push({ integer: parseInt(req.query.integer) });
+      query.integer = parseInt(req.query.integer);
+    }
+    if (req.query.float) {
+      params.push({ float: parseFloat(req.query.float) });
+      query.float = parseFloat(req.query.float);
+    }
+    if (req.query.dateS) {
+      params.push(req.query.dateS);
+      params.push(req.query.dateE);
+      query.date = {
+        $gte: new Date(req.query.dateS),
+        $lte: new Date(req.query.dateE),
+      };
+    }
+    if (req.query.boolean) {
+      params.push(req.query.boolean);
+      query.boolean = req.query.boolean;
+    }
+
+    const collection = req.app.locals.db.collection("bread");
+
+    const countData = await collection.countDocuments(query);
+    console.log(countData);
+    const totalPages = Math.ceil(countData / limit);
+
+    const sortOrder = req.query.sortOrder || "asc";
+    const sortBy = req.query.sortBy || "number";
+
+    const sort = sortOrder === "asc" ? 1 : -1;
+
+    const data = await collection
+      .find(query)
+      .sort({ [sortBy]: sort })
+      .skip(offset)
+      .limit(limit)
+      .toArray();
+
+    res.json({
+      data: data,
+      pages: totalPages,
+      page,
+      offset,
+      query: req.query,
+      sortOrder: sortOrder,
+      sortBy: sortBy,
     });
-    // res.render("list", { data: processData, moment });
-    res.json(processData);
-    console.log(processData);
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
