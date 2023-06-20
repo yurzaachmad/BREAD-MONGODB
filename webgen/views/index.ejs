@@ -10,14 +10,18 @@
       integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
       crossorigin="anonymous"
     />
-
+    <script
+      src="https://kit.fontawesome.com/6ea2cb925f.js"
+      crossorigin="anonymous"
+    ></script>
     <title>Document</title>
   </head>
   <body>
     <div class="card">
-      <div class="card-header">
+      <div class="card-header text-center">
         <h1>BREAD</h1>
       </div>
+      <h2>ADD</h2>
       <div class="card-body">
         <form id="form" style="display: none">
           <fieldset>
@@ -33,7 +37,7 @@
               />
             </div>
             <div class="mb-3">
-              <label for="string1" class="form-label">String</label>
+              <label for="string1" class="form-label"> String </label>
               <input
                 type="text"
                 id="string1"
@@ -90,6 +94,7 @@
           </fieldset>
         </form>
       </div>
+      <h2>EDIT</h2>
       <div class="card-body">
         <form id="form2" style="display: none">
           <fieldset>
@@ -163,119 +168,156 @@
         </form>
       </div>
       <div class="card-body">
-        <form id="formSearch">
+        <!-- untuk form search -->
+        <form id="filter-form">
+          <input type="hidden" name="page" value="1" />
           <div class="row mb-3">
-            <input type="hidden" name="page" value="1" />
-            <label for="idSearch" class="col-sm-2 col-form-label">id</label>
-            <div class="col-sm-10">
-              <input type="checkbox" id="idSearch" name="id1" value="id" />
+            <label for="inputId" class="col-sm-4 col-form-label">
+              <input type="checkbox" name="checkId" id="checkId" />
+              Id
+            </label>
+            <div class="col-sm-8">
               <input
                 type="number"
                 class="form-control"
-                name="idSearch"
-                value=""
+                id="idFilter"
+                name="number"
               />
             </div>
           </div>
           <div class="row mb-3">
-            <label for="stringSearch" class="col-sm-2 col-form-label"
-              >String</label
-            >
-            <div class="col-sm-10">
-              <input
-                type="checkbox"
-                id="stringSearch"
-                name="string1"
-                value="string"
-              />
+            <label for="inputStr" class="col-sm-4 col-form-label">
+              <input type="checkbox" name="checkStr" id="checkStr" />
+              String
+            </label>
+            <div class="col-sm-8">
               <input
                 type="text"
                 class="form-control"
-                name="stringSearch"
-                value=""
+                id="strFilter"
+                name="string"
               />
             </div>
           </div>
           <div class="row mb-3">
-            <label for="integerSearch" class="col-sm-2 col-form-label"
-              >Integer</label
-            >
-            <div class="col-sm-10">
+            <label for="inputInt" class="col-sm-4 col-form-label">
+              <input type="checkbox" name="checkInt" id="checkInt" />
+              Integer
+            </label>
+            <div class="col-sm-8">
               <input
-                type="checkbox"
-                id="integerSearch"
-                name="integer1"
-                value="integer"
-              />
-              <input
-                type="number"
+                type="text"
                 class="form-control"
-                name="integerSearch"
-                value=""
+                id="intFilter"
+                name="integer"
               />
             </div>
           </div>
           <div class="row mb-3">
-            <label for="floatSearch" class="col-sm-2 col-form-label"
-              >Float</label
-            >
-            <div class="col-sm-10">
+            <label for="inputFloat" class="col-sm-4 col-form-label">
+              <input type="checkbox" name="checkFloat" id="checkFloat" />
+              Float
+            </label>
+            <div class="col-sm-8">
               <input
-                type="checkbox"
-                id="floatSearch"
-                name="float1"
-                value="float"
-              />
-              <input
-                type="number"
+                type="text"
                 class="form-control"
-                name="floatSearch"
-                value=""
+                id="floatFilter"
+                name="float"
               />
             </div>
           </div>
           <div class="row mb-3">
-            <label for="dateSearch" class="col-sm-2 col-form-label">Date</label>
-            <div class="col-sm-10">
+            <label for="inputDate" class="col-sm-4 col-form-label">
+              <input type="checkbox" name="checkDate" id="checkDate" />
+              Date
+            </label>
+            <div class="col-sm-4">
               <input
-                type="checkbox"
-                id="dateSearch"
-                name="date1"
-                value="date"
+                type="date"
+                class="form-control"
+                id="startDateFilter"
+                name="startDate"
               />
-              <input type="date" class="form-control" name="dateS" value="" />
-              <small>to</small>
-              <input type="date" class="form-control" name="dateE" value="" />
+              to
+              <input
+                type="date"
+                class="form-control"
+                id="endDateFilter"
+                name="endDate"
+              />
             </div>
           </div>
-          <div>
-            <label for="booleanSearch">Boolean</label>
-            <br />
-            <input
-              type="checkbox"
-              id="booleanSearch"
-              name="boolean1"
-              value="true"
-            />
-            <select class="form-select" id="boolean" name="booleanSearch">
-              <option value="">-- Select --</option>
-              <option value="true">True</option>
-              <option value="false">False</option>
-            </select>
+          <div class="row mb-3">
+            <label for="inputBol" class="col-sm-4 col-form-label">
+              <input type="checkbox" name="checkBol" id="checkBol" />
+              Boolean
+            </label>
+            <div class="col-sm-8">
+              <select name="boolean" id="booleanFilter" class="form-select">
+                <option>Choose the boolean</option>
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
           </div>
-          <br />
-          <button type="submit" class="btn btn-primary">Cari</button>
+          <button type="submit" class="btn btn-primary" id="searchButton">
+            Search
+          </button>
+          <a href="/users" class="btn btn-secondary">Back</a>
         </form>
       </div>
       <table class="table table-striped">
         <thead>
           <tr>
-            <td>number</td>
-            <td>string</td>
-            <td>integer</td>
-            <td>float</td>
-            <td>date</td>
-            <td>boolean</td>
+            <td>
+              number
+              <i
+                class="fa-solid fa-sort fa-sort-up"
+                onclick="sortData('number', this)"
+                data-field="number"
+              ></i>
+            </td>
+            <td>
+              string
+              <i
+                class="fa-solid fa-sort fa-sort-up"
+                onclick="sortData('string', this)"
+                data-field="string"
+              ></i>
+            </td>
+            <td>
+              integer
+              <i
+                class="fa-solid fa-sort fa-sort-up"
+                onclick="sortData('integer', this)"
+                data-field="integer"
+              ></i>
+            </td>
+            <td>
+              float
+              <i
+                class="fa-solid fa-sort fa-sort-up"
+                onclick="sortData('float', this)"
+                data-field="float"
+              ></i>
+            </td>
+            <td>
+              date
+              <i
+                class="fa-solid fa-sort fa-sort-up"
+                onclick="sortData('date', this)"
+                data-field="date"
+              ></i>
+            </td>
+            <td>
+              boolean
+              <i
+                class="fa-solid fa-sort fa-sort-up"
+                onclick="sortData('boolean', this)"
+                data-field="boolean"
+              ></i>
+            </td>
           </tr>
         </thead>
         <tbody id="body-bread"></tbody>
@@ -288,38 +330,119 @@
     <script>
       let selectedId = null;
 
+      let sortField = null;
+      let sortOrder = 1;
+
+      function sortData(field, element) {
+        if (sortField === field) {
+          sortOrder *= -1;
+        } else {
+          sortField = field;
+          sortOrder = 1;
+        }
+
+        // Menghapus kelas ikon sebelumnya
+        const icons = document.querySelectorAll(".fa-sort");
+        icons.forEach((icon) => {
+          icon.classList.remove("fa-sort-up", "fa-sort-down");
+          icon.classList.add("fa-sort");
+        });
+
+        // Mengatur kelas ikon berdasarkan arah pengurutan saat ini
+        if (sortOrder === 1) {
+          element.classList.remove("fa-sort-down");
+          element.classList.remove("fa-sort");
+          element.classList.add("fa-sort-up");
+        } else {
+          element.classList.remove("fa-sort-up");
+          element.classList.remove("fa-sort");
+          element.classList.add("fa-sort-down");
+        }
+
+        loadData();
+      }
+
       function loadData(page) {
-        fetch(`http://localhost:3000/?page=${page}`)
+        const filterForm = document.getElementById("filter-form");
+        const formData = new FormData(filterForm);
+        const searchParams = new URLSearchParams(formData);
+
+        let url = "http://localhost:3000/";
+        if (page > 1) {
+          searchParams.set("page", page);
+        }
+
+        if (sortField) {
+          searchParams.set("sortField", sortField);
+          searchParams.set("sortOrder", sortOrder === 1 ? "asc" : "desc");
+        }
+
+        url += "?" + searchParams.toString();
+
+        const randomParam = Math.random().toString(36).substring(7);
+        url += `&random=${randomParam}`;
+
+        fetch(url)
           .then((response) => response.json())
           .then((data) => {
             let html = "";
             data.data.forEach((datas) => {
               html += `
-              <tr>
-                <td>${datas.number}</td>
-                <td>${datas.string}</td>
-                <td>${datas.integer}</td>
-                <td>${datas.float}</td>
-                <td>${datas.date}</td>
-                <td>${datas.boolean}</td>
-                <td>
-                  <button class="btn btn-danger" onclick="deleteData('${datas._id}')">Hapus</button>
-                  <button class="btn btn-success" onclick="editData('${datas._id}')">Edit</button>
-                </td>
-                </tr>
-              `;
+          <tr>
+            <td>${datas.number}</td>
+            <td>${datas.string}</td>
+            <td>${datas.integer}</td>
+            <td>${datas.float}</td>
+            <td>${datas.date}</td>
+            <td>${datas.boolean}</td>
+            <td>
+              <button class="btn btn-danger" onclick="deleteData('${datas._id}')">Hapus</button>
+              <button class="btn btn-success" onclick="editData('${datas._id}')">Edit</button>
+            </td>
+          </tr>
+        `;
             });
             console.log(data);
             document.getElementById("body-bread").innerHTML = html;
 
             const paginationContainer = document.getElementById("pagination1");
+            if (!paginationContainer) {
+              paginationContainer = document.createElement("ul");
+              paginationContainer.id = "pagination1";
+              paginationContainer.classList.add("pagination");
+            }
             paginationContainer.innerHTML = "";
+
+            // Tombol Previous
+            const prevLi = document.createElement("li");
+            prevLi.classList.add("page-item");
+
+            const prevLink = document.createElement("a");
+            prevLink.classList.add("page-link");
+            prevLink.href = `javascript:void(0)`;
+            prevLink.innerText = "Previous";
+
+            prevLink.addEventListener("click", () => {
+              if (page > 1) {
+                loadData(page - 1);
+              }
+            });
+
+            prevLi.appendChild(prevLink);
+            paginationContainer.appendChild(prevLi);
 
             for (let i = 0; i < data.pages; i++) {
               const li = document.createElement("li");
+              li.classList.add("page-item");
+
               const link = document.createElement("a");
+              link.classList.add("page-link");
               link.href = `javascript:void(0)`;
               link.innerText = i + 1;
+
+              if (i + 1 === page) {
+                link.classList.add("active");
+              }
 
               link.addEventListener("click", () => {
                 loadData(i + 1);
@@ -328,6 +451,24 @@
               li.appendChild(link);
               paginationContainer.appendChild(li);
             }
+
+            // Tombol Next
+            const nextLi = document.createElement("li");
+            nextLi.classList.add("page-item");
+
+            const nextLink = document.createElement("a");
+            nextLink.classList.add("page-link");
+            nextLink.href = `javascript:void(0)`;
+            nextLink.innerText = "Next";
+
+            nextLink.addEventListener("click", () => {
+              if (page < data.pages) {
+                loadData(page + 1);
+              }
+            });
+
+            nextLi.appendChild(nextLink);
+            paginationContainer.appendChild(nextLi);
           })
           .catch((err) => {
             console.log(err);
@@ -460,6 +601,13 @@
         }
       });
 
+      const searchButton = document.getElementById("searchButton");
+
+      searchButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        loadData(1);
+      });
+
       document
         .getElementById("form")
         .addEventListener("submit", function (event) {
@@ -478,7 +626,7 @@
           editDatas(id);
         });
 
-      loadData();
+      loadData(1);
     </script>
   </body>
 </html>
