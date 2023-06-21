@@ -14,6 +14,7 @@
       src="https://kit.fontawesome.com/6ea2cb925f.js"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <title>Document</title>
   </head>
   <body>
@@ -21,9 +22,9 @@
       <div class="card-header text-center">
         <h1>BREAD</h1>
       </div>
-      <h2>ADD</h2>
       <div class="card-body">
         <form id="form" style="display: none">
+          <h2 class="text-center">ADD</h2>
           <fieldset>
             <div class="mb-3">
               <label for="number1" class="form-label">Number</label>
@@ -94,9 +95,9 @@
           </fieldset>
         </form>
       </div>
-      <h2>EDIT</h2>
       <div class="card-body">
         <form id="form2" style="display: none">
+          <h2 class="text-center">EDIT</h2>
           <fieldset>
             <div class="mb-3">
               <label for="number2" class="form-label">Number</label>
@@ -393,16 +394,19 @@
             <td>${datas.string}</td>
             <td>${datas.integer}</td>
             <td>${datas.float}</td>
-            <td>${datas.date}</td>
+            <td>${moment(datas.date).format("DD-MMM-YYYY")}</td>
             <td>${datas.boolean}</td>
             <td>
-              <button class="btn btn-danger" onclick="deleteData('${datas._id}')">Hapus</button>
-              <button class="btn btn-success" onclick="editData('${datas._id}')">Edit</button>
+              <button class="btn btn-danger" onclick="deleteData('${
+                datas._id
+              }')">Hapus</button>
+              <button class="btn btn-success" onclick="editData('${
+                datas._id
+              }')">Edit</button>
             </td>
           </tr>
         `;
             });
-            console.log(data);
             document.getElementById("body-bread").innerHTML = html;
 
             const paginationContainer = document.getElementById("pagination1");
@@ -531,7 +535,6 @@
             alert("Please, Insert the data");
             return;
           }
-          console.log(id);
           const response = await fetch(`http://localhost:3000/${id}`, {
             method: "PUT",
             headers: {
@@ -567,7 +570,9 @@
             document.getElementById("string2").value = data.string;
             document.getElementById("integer2").value = data.integer;
             document.getElementById("float2").value = data.float;
-            document.getElementById("date2").value = data.date;
+            document.getElementById("date2").value = moment(data.date).format(
+              "YYYY-MM-DD"
+            );
             document.getElementById("boolean2").value = data.boolean;
 
             form2.style.display = "block";

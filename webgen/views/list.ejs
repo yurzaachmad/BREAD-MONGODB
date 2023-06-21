@@ -205,7 +205,11 @@
               </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Tambah</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-circle-check"></i>
+            </button>
+            <br />
+            <br />
           </fieldset>
         </form>
       </div>
@@ -273,12 +277,16 @@
             <div class="mb-3">
               <label for="boolean2" class="form-label">boolean</label>
               <select class="form-select" id="boolean2" name="boolean">
-                <option value="true">True</option>
-                <option value="false">False</option>
+                <option value="true">true</option>
+                <option value="false">false</option>
               </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Edit</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-circle-check"></i>
+            </button>
+            <br />
+            <br />
           </fieldset>
         </form>
       </div>
@@ -296,7 +304,6 @@
           searchData();
         });
       });
-      let id;
       const loadData = () => {
         $.ajax({
           url: "/",
@@ -526,7 +533,7 @@
             console.log(error);
           });
       }
-
+      let data;
       function editData(id) {
         selectedId = id;
         $.ajax({
@@ -536,13 +543,12 @@
         })
           .done(function (item) {
             data = item;
-            console.log(data.boolean);
             $("#number2").val(data.number);
             $("#string2").val(data.string);
             $("#integer2").val(data.integer);
             $("#float2").val(data.float);
-            $("#date2").val(data.date);
-            $("#boolean2").val(data.boolean);
+            $("#date2").val(moment(data.date).format("YYYY-MM-DD"));
+            $("#boolean2").val(data.boolean.toString());
 
             $("#form-edit").css("display", "block");
           })
@@ -552,6 +558,7 @@
       }
 
       async function editDatas(id) {
+        selectedId = id;
         const number = $("#number2").val();
         const string = $("#string2").val();
         const integer = $("#integer2").val();
@@ -579,12 +586,12 @@
         }).done(function (response) {
           loadData();
           $("#form-edit").hide();
-          $("#string1").val("");
-          $("#number1").val("");
-          $("#integer1").val("");
-          $("#float1").val("");
-          $("#date1").val("");
-          $("#boolean1").val("");
+          $("#string2").val("");
+          $("#number2").val("");
+          $("#integer2").val("");
+          $("#float2").val("");
+          $("#date2").val("");
+          $("#boolean2").val("");
         });
       }
 
@@ -598,12 +605,11 @@
         event.preventDefault();
         addData();
       });
-
-      $("#form-edit").bind("submit", function (event) {
-        console.log("masuk");
+      let ide;
+      $("#form-edit").submit(function (event) {
         event.preventDefault();
-        id = id;
-        editDatas(id);
+        ide = `${data._id}`;
+        editDatas(ide);
       });
     </script>
   </body>

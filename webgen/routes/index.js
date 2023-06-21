@@ -125,7 +125,7 @@ router.put("/:id", async (req, res) => {
           string: string,
           integer: parseInt(integer),
           float: parseFloat(float),
-          date: date,
+          date: new Date(date),
           boolean: boolean === "true",
         },
       }
