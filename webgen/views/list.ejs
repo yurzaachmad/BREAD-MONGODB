@@ -4,65 +4,607 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Challenge 22</title>
+    <title>Document</title>
     <link
+      rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      type="text/css"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/6ea2cb925f.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <br />
-    <br />
-    <h1 class="text-center">BREAD(Browse, Read, Edit, Delete)</h1>
-    <br />
-    <br />
     <div class="container">
+      <div class="card">
+        <div class="card-header text-center">
+          <h1>BREAD</h1>
+        </div>
+        <div class="card-body">
+          <form id="filter-form">
+            <input type="hidden" name="page" value="1" />
+            <div class="row mb-3">
+              <label for="inputId" class="col-sm-4 col-form-label">
+                <input type="checkbox" name="checkId" id="checkId" />
+                Id
+              </label>
+              <div class="col-sm-8">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="idFilter"
+                  name="number"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputStr" class="col-sm-4 col-form-label">
+                <input type="checkbox" name="checkStr" id="checkStr" />
+                String
+              </label>
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="strFilter"
+                  name="string"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputInt" class="col-sm-4 col-form-label">
+                <input type="checkbox" name="checkInt" id="checkInt" />
+                Integer
+              </label>
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="intFilter"
+                  name="integer"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputFloat" class="col-sm-4 col-form-label">
+                <input type="checkbox" name="checkFloat" id="checkFloat" />
+                Float
+              </label>
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="floatFilter"
+                  name="float"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputDate" class="col-sm-4 col-form-label">
+                <input type="checkbox" name="checkDate" id="checkDate" />
+                Date
+              </label>
+              <div class="col-sm-8">
+                <input
+                  type="date"
+                  class="form-control"
+                  id="startDateFilter"
+                  name="startDate"
+                />
+                to
+                <input
+                  type="date"
+                  class="form-control"
+                  id="endDateFilter"
+                  name="endDate"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputBol" class="col-sm-4 col-form-label">
+                <input type="checkbox" name="checkBol" id="checkBol" />
+                Boolean
+              </label>
+              <div class="col-sm-8">
+                <select name="boolean" id="booleanFilter" class="form-select">
+                  <option>Choose the boolean</option>
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <a class="btn btn-secondary" onclick="resetSearch()"
+              ><i class="fa-solid fa-rotate-left"></i
+            ></a>
+          </form>
+        </div>
+        <table class="table table-striped">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+        <div class="card-footer">
+          <nav id="pagination" aria-label="Page navigation example"></nav>
+          <button class="btn btn-info" id="addButton">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
       <br />
-      <br />
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>String</th>
-            <th>Integer</th>
-            <th>Float</th>
-            <th>Date</th>
-            <th>boolean</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% data.forEach((item, index) => { %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td><%= item.string %></td>
-            <td><%= item.integer %></td>
-            <td><%= item.float %></td>
-            <td><%= moment(item.date).format('DD MMM YYYY') %></td>
-            <td><%= item.boolean %></td>
-            <td>
-              <a href="/edit/<%= item.id %>"
-                ><button class="btn btn-success" type="button">Edit</button></a
-              >
-              <span></span
-              ><a href="/delete/<%= item.id %>"
-                ><button class="btn btn-danger" type="button">Delete</button></a
-              >
-            </td>
-          </tr>
-          <%})%>
-        </tbody>
-      </table>
-      <br />
-      <span></span>
-      <a href="/add"
-        ><button class="btn btn-primary" type="button">Add</button></a
-      >
+      <!-- start add form -->
+      <div class="card-body">
+        <form id="form" style="display: none">
+          <h2 class="text-center">ADD</h2>
+          <fieldset>
+            <div class="mb-3">
+              <label for="number1" class="form-label">Number</label>
+              <input
+                type="number"
+                id="number1"
+                class="form-control"
+                placeholder="Number"
+                name="number"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="string1" class="form-label"> String </label>
+              <input
+                type="text"
+                id="string1"
+                class="form-control"
+                placeholder="String"
+                name="string"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="integer1" class="form-label">integer</label>
+              <input
+                type="number"
+                id="integer1"
+                class="form-control"
+                placeholder="integer"
+                name="integer"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="float1" class="form-label">float</label>
+              <input
+                type="number"
+                step="0.01"
+                id="float1"
+                class="form-control"
+                placeholder="float"
+                name="float"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="date1" class="form-label">date</label>
+              <input
+                type="date"
+                id="date1"
+                class="form-control"
+                placeholder="date"
+                name="date"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="boolean1" class="form-label">boolean</label>
+              <select class="form-select" id="boolean1" name="boolean">
+                <option disabled>Choose the boolean...</option>
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Tambah</button>
+          </fieldset>
+        </form>
+      </div>
+
+      <!-- untuk form edit -->
+      <div class="card-body">
+        <form id="form-edit" style="display: none">
+          <fieldset>
+            <div class="mb-3">
+              <label for="number2" class="form-label">Number</label>
+              <input
+                type="number"
+                id="number2"
+                class="form-control"
+                placeholder="Number"
+                name="number"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="string2" class="form-label">String</label>
+              <input
+                type="text"
+                id="string2"
+                class="form-control"
+                placeholder="String"
+                name="string"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="integer2" class="form-label">integer</label>
+              <input
+                type="number"
+                id="integer2"
+                class="form-control"
+                placeholder="integer"
+                name="integer"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="float2" class="form-label">float</label>
+              <input
+                type="number"
+                step="0.01"
+                id="float2"
+                class="form-control"
+                placeholder="float"
+                name="float"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="date2" class="form-label">date</label>
+              <input
+                type="date"
+                id="date2"
+                class="form-control"
+                placeholder="date"
+                name="date"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <label for="boolean2" class="form-label">boolean</label>
+              <select class="form-select" id="boolean2" name="boolean">
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Edit</button>
+          </fieldset>
+        </form>
+      </div>
     </div>
+    <script>
+      let params = {
+        page: 1,
+      };
+      $(document).ready(function () {
+        sort("number", "asc");
+        loadData();
+
+        $("#filter-form").submit(function (event) {
+          event.preventDefault();
+          searchData();
+        });
+      });
+      let id;
+      const loadData = () => {
+        $.ajax({
+          url: "/",
+          data: params,
+          dataType: "json",
+        }).done(function (data) {
+          // sort();
+
+          // loadData();
+          let html = "";
+          data.data.forEach((item) => {
+            html += `
+              <tr>
+                <td>${item.number}</td>
+                <td>${item.string}</td>
+                <td>${item.integer}</td>
+                <td>${item.float}</td>
+                <td>${moment(item.date).format("DD-MMM-YYYY")}</td>
+                <td>${item.boolean}</td>
+                <td>
+                  <button class="btn btn-success" onclick="editData('${
+                    item._id
+                  }')"><i class="fa-solid fa-pencil"></i></button>
+                  <button class="btn btn-danger" type="button" onclick="deleteData('${
+                    item._id
+                  }')"><i class="fa-solid fa-trash"></i></button>
+                </td>
+              </tr>
+              `;
+            id = item._id;
+          });
+          $("table tbody").html(html);
+          params = { ...params, page: data.page, pages: data.pages };
+          generatePagination(params);
+        });
+      };
+
+      const generatePagination = ({ page, pages }) => {
+        let html = `<ul class="pagination">`;
+
+        if (page > 1)
+          html += `
+                <li class="page-item">
+                  <a class="page-link" href="javascript: void(0)" onClick="changePage(${
+                    page - 1
+                  })" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+               `;
+
+        for (let i = 1; i <= pages; i++) {
+          html += `<li class="page-item${
+            page == i ? " active" : ""
+          }"><a class="page-link" href="javascript: void(0)" onClick="changePage(${i})">${i}</a></li>`;
+        }
+
+        if (page < pages)
+          html += `<li class="page-item">
+                  <a class="page-link" href="javascript: void(0)" onClick="changePage(${
+                    page + 1
+                  })" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                `;
+        html += `</ul>`;
+
+        $("#pagination").html(html);
+      };
+
+      const changePage = (page) => {
+        params = { ...params, page };
+        loadData();
+      };
+
+      const searchData = () => {
+        const number = $("#idFilter").val();
+        const checkNumber = $("#checkId").val();
+        const string = $("#strFilter").val();
+        const checkString = $("#checkStr").val();
+        const integer = $("#intFilter").val();
+        const checkInteger = $("#checkInt").val();
+        const float = $("#floatFilter").val();
+        const checkFloat = $("#checkFloat").val();
+        const boolean = $("#booleanFilter").val();
+        const checkBoolean = $("#checkBol").val();
+        const startdate = $("#startDateFilter").val();
+        const enddate = $("#endDateFilter").val();
+        const checkDatee = $("#checkDate").val();
+
+        params = {
+          ...params,
+          number,
+          checkId: checkNumber,
+          string,
+          checkStr: checkString,
+          integer,
+          checkInt: checkInteger,
+          float,
+          checkFloat: checkFloat,
+          boolean,
+          checkBol: checkBoolean,
+          startDate: startdate,
+          endDate: enddate,
+          checkDate: checkDatee,
+        };
+
+        loadData();
+      };
+
+      const resetSearch = () => {
+        params = {
+          page: 1,
+        };
+        loadData();
+        $("#filter-form").trigger("reset");
+      };
+
+      const sort = (sortField, sortOrder) => {
+        let html = `<tr>
+                <th>Number <i class="fa-solid fa-sort${
+                  sortField == "number"
+                    ? sortOrder == "desc"
+                      ? "-up"
+                      : "-down"
+                    : ""
+                }" onClick="sort('number', '${
+          sortOrder == "desc" ? "asc" : "desc"
+        }')"></i></th>
+                <th>String <i class="fa-solid fa-sort${
+                  sortField == "string"
+                    ? sortOrder == "desc"
+                      ? "-up"
+                      : "-down"
+                    : ""
+                }" onClick="sort('string', '${
+          sortOrder == "desc" ? "asc" : "desc"
+        }')"></i></th>
+                <th>Integer <i class="fa-solid fa-sort${
+                  sortField == "integer"
+                    ? sortOrder == "desc"
+                      ? "-up"
+                      : "-down"
+                    : ""
+                }" onClick="sort('integer', '${
+          sortOrder == "desc" ? "asc" : "desc"
+        }')"></i></th>
+                <th>Float <i class="fa-solid fa-sort${
+                  sortField == "float"
+                    ? sortOrder == "desc"
+                      ? "-up"
+                      : "-down"
+                    : ""
+                }" onClick="sort('float', '${
+          sortOrder == "desc" ? "asc" : "desc"
+        }')"></i></th>
+                <th>Date <i class="fa-solid fa-sort${
+                  sortField == "date"
+                    ? sortOrder == "desc"
+                      ? "-up"
+                      : "-down"
+                    : ""
+                }" onClick="sort('date', '${
+          sortOrder == "desc" ? "asc" : "desc"
+        }')"></i></th>
+                <th>Boolean <i class="fa-solid fa-sort${
+                  sortField == "boolean"
+                    ? sortOrder == "desc"
+                      ? "-up"
+                      : "-down"
+                    : ""
+                }" onClick="sort('boolean', '${
+          sortOrder == "desc" ? "asc" : "desc"
+        }')"></i></th>
+                <th>Action</th>
+              </tr>`;
+        $("table thead").html(html);
+        params = { ...params, sortField, sortOrder };
+        loadData();
+      };
+
+      function addData() {
+        const string = $("#string1").val();
+        const number = $("#number1").val();
+        const integer = $("#integer1").val();
+        const float = $("#float1").val();
+        const date = $("#date1").val();
+        const boolean = $("#boolean1").val();
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/",
+          data: JSON.stringify({
+            string,
+            number,
+            integer,
+            float,
+            date,
+            boolean,
+          }),
+          contentType: "application/json",
+          dataType: "json",
+        }).done(function (response) {
+          loadData();
+          $("#form").hide();
+          $("#string1").val("");
+          $("#number1").val("");
+          $("#integer1").val("");
+          $("#float1").val("");
+          $("#date1").val("");
+          $("#boolean1").val("");
+        });
+      }
+
+      function deleteData(id) {
+        $.ajax({
+          type: "DELETE",
+          url: `http://localhost:3000/${id}`,
+          dataType: "json",
+        })
+          .done(function (item) {
+            data = item;
+            loadData();
+          })
+          .fail(function (error) {
+            console.log(error);
+          });
+      }
+
+      function editData(id) {
+        selectedId = id;
+        $.ajax({
+          type: "GET",
+          url: `http://localhost:3000/edit/${id}`,
+          dataType: "json",
+        })
+          .done(function (item) {
+            data = item;
+            console.log(data.boolean);
+            $("#number2").val(data.number);
+            $("#string2").val(data.string);
+            $("#integer2").val(data.integer);
+            $("#float2").val(data.float);
+            $("#date2").val(data.date);
+            $("#boolean2").val(data.boolean);
+
+            $("#form-edit").css("display", "block");
+          })
+          .fail(function (error) {
+            console.log(error);
+          });
+      }
+
+      async function editDatas(id) {
+        const number = $("#number2").val();
+        const string = $("#string2").val();
+        const integer = $("#integer2").val();
+        const float = $("#float2").val();
+        const date = $("#date2").val();
+        const boolean = $("#boolean2").val();
+
+        if (!number || !string || !integer || !float || !date || !boolean) {
+          alert("Please, Insert the data");
+          return;
+        }
+        $.ajax({
+          type: "PUT",
+          url: `http://localhost:3000/${id}`,
+          data: JSON.stringify({
+            string,
+            number,
+            integer,
+            float,
+            date,
+            boolean,
+          }),
+          contentType: "application/json",
+          dataType: "json",
+        }).done(function (response) {
+          loadData();
+          $("#form-edit").hide();
+          $("#string1").val("");
+          $("#number1").val("");
+          $("#integer1").val("");
+          $("#float1").val("");
+          $("#date1").val("");
+          $("#boolean1").val("");
+        });
+      }
+
+      $("#addButton").click(function (e) {
+        $("#form").show();
+
+        e.preventDefault();
+      });
+
+      $("#form").bind("submit", function (event) {
+        event.preventDefault();
+        addData();
+      });
+
+      $("#form-edit").bind("submit", function (event) {
+        console.log("masuk");
+        event.preventDefault();
+        id = id;
+        editDatas(id);
+      });
+    </script>
   </body>
 </html>

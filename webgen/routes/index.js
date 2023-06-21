@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-var moment = require("moment");
 const ObjectID = require("mongodb").ObjectId;
 
 /* GET home page. */
@@ -14,61 +13,64 @@ router.get("/", async (req, res) => {
     const params = [];
     const query = {};
 
-    if (req.query.id) {
-      params.push({ _id: parseInt(req.query.id) });
-      query.id = parseInt(req.query.id);
-    }
-    // if (req.query._id) {
-    //   const idValue = req.query._id;
-    //   params.push({ _id: idValue });
-    //   query._id = idValue;
-    // }
-    // if (req.query.id) {
-    //   params.push({ number: parseInt(req.query.id) });
-    // }
-    if (req.query.number) {
+    if (req.query.checkId && req.query.number) {
       params.push({ number: parseInt(req.query.number) });
       query.number = parseInt(req.query.number);
     }
-    if (req.query.string) {
+    if (req.query.checkStr && req.query.string) {
       params.push(req.query.string);
       query.string = { $regex: req.query.string, $options: "i" };
     }
-    if (req.query.integer) {
+    if (req.query.checkInt && req.query.integer) {
       params.push({ integer: parseInt(req.query.integer) });
       query.integer = parseInt(req.query.integer);
     }
-    if (req.query.float) {
+    if (req.query.checkFloat && req.query.float) {
       params.push({ float: parseFloat(req.query.float) });
       query.float = parseFloat(req.query.float);
     }
-    if (req.query.dateS) {
-      params.push(req.query.dateS);
-      params.push(req.query.dateE);
+    if (req.query.checkDate && req.query.startDate && req.query.endDate) {
+      params.push(new Date(req.query.startDate));
+      params.push(new Date(req.query.endDate));
       query.date = {
-        $gte: new Date(req.query.dateS),
-        $lte: new Date(req.query.dateE),
+        $gte: new Date(req.query.startDate),
+        $lte: new Date(req.query.endDate),
+      };
+    } else if (req.query.startDate) {
+      params.push(new Date(req.query.startDate));
+      query.date = {
+        $gte: new Date(req.query.startDate),
+      };
+    } else if (req.query.endDate) {
+      params.push(new Date(req.query.endDate));
+      query.date = {
+        $lte: new Date(req.query.endDate),
       };
     }
-    if (req.query.boolean) {
-      params.push(req.query.boolean);
-      query.boolean = req.query.boolean;
+
+    if (req.query.checkBol && req.query.boolean) {
+      if (req.query.boolean === "true") {
+        params.push({ boolean: true });
+        query.boolean = true;
+      } else if (req.query.boolean === "false") {
+        params.push({ boolean: false });
+        query.boolean = false;
+      } else {
+        console.log("Invalid boolean value");
+      }
     }
 
     const collection = req.app.locals.db.collection("bread");
 
     const countData = await collection.countDocuments(query);
-    console.log(countData);
     const totalPages = Math.ceil(countData / limit);
 
-    const sortOrder = req.query.sortOrder || "asc";
-    const sortBy = req.query.sortBy || "number";
-
-    const sort = sortOrder === "asc" ? 1 : -1;
+    const sortField = req.query.sortField || "number";
+    const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
     const data = await collection
       .find(query)
-      .sort({ [sortBy]: sort })
+      .sort({ [sortField]: sortOrder })
       .skip(offset)
       .limit(limit)
       .toArray();
@@ -76,11 +78,11 @@ router.get("/", async (req, res) => {
     res.json({
       data: data,
       pages: totalPages,
-      page,
+      page: parseInt(page),
       offset,
       query: req.query,
+      sortField: sortField,
       sortOrder: sortOrder,
-      sortBy: sortBy,
     });
   } catch (error) {
     console.log(error);
@@ -98,8 +100,8 @@ router.post("/", async (req, res) => {
       number: parseInt(number),
       string: string,
       integer: parseInt(integer),
-      float: parseInt(float),
-      date: date,
+      float: parseFloat(float),
+      date: new Date(date),
       boolean: boolean === "true",
     });
     res.json(result);
@@ -122,7 +124,7 @@ router.put("/:id", async (req, res) => {
           number: parseInt(number),
           string: string,
           integer: parseInt(integer),
-          float: parseInt(float),
+          float: parseFloat(float),
           date: date,
           boolean: boolean === "true",
         },
@@ -139,7 +141,6 @@ router.get("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Periksa apakah id sesuai dengan format yang diharapkan
     if (!ObjectID.isValid(id)) {
       return res.status(400).json({ error: "Invalid ID format" });
     }
